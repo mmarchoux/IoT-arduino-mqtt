@@ -37,7 +37,9 @@
     // create a client that will subscribe to topics
     var sensor = mqtt.connect("wss://led:web@m23.cloudmqtt.com:37980");
     //var topic = "#";
-    //var values = [];
+    var valueslig = [];
+    var valuesdht = [];
+    var valuesled = [];
 
     // subscribe to some topic
     /*sensor.subscribe("DHT");
@@ -50,15 +52,17 @@
     sensor.on("message", function (topic, payload) {
       var message = new TextDecoder("utf-8").decode(payload);
       console.log("message received by sensor: " , topic , message);
-      values = values + [topic+" : "+message +"\n"];
       if(topic==="light"){
-        $('#lig').html(values);
+      valueslig = valueslig + [topic+" : "+message +"\n"];
+        $('#lig').html(valueslig);
       }
       else if(topic==="led"){
-        $('#led').html(values);
+      valuesled= valuesled + [topic+" : "+message +"\n"];
+        $('#led').html(valuesled);
       }
       else if(topic==="DHT"){
-        $('#dht').html(values);
+      valuesdht = valuesdht + [topic+" : "+message +"\n"];
+        $('#dht').html(valuesdht);
       }
     });
 
