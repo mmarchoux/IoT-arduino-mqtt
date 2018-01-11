@@ -1,0 +1,140 @@
+<html>
+<head>
+    <title>IoT</title>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script> 
+
+</head>
+
+<body>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+  <script src="https://unpkg.com/mqtt/dist/mqtt.min.js"></script>
+  
+      
+  <script>
+
+
+
+  $(function(){
+
+    // create a client that will publish to topics
+    var led = mqtt.connect("wss://led:led@m23.cloudmqtt.com:37980");
+
+    // this will be called when the "Switch" button is pressed 
+    $('#publish').on('click',function() {
+        console.log("switch light" );
+        var topic = "actuator";
+        var message = "switch";
+        led.publish(topic, message);
+    });
+
+
+    // create a client that will subscribe to topics
+    var sensor = mqtt.connect("wss://led:web@m23.cloudmqtt.com:37980");
+    //var topic = "#";
+    //var values = [];
+
+    // subscribe to some topic
+    /*sensor.subscribe("DHT");
+    sensor.subscribe("light");
+    sensor.subscribe("led");*/
+    sensor.subscribe("#")
+    //console.log(sensor.subscribe(topic));
+
+    // this will be called when a message is received
+    sensor.on("message", function (topic, payload) {
+      var message = new TextDecoder("utf-8").decode(payload);
+      console.log("message received by sensor: " , topic , message);
+      values = values + [topic+" : "+message +"\n"];
+      if(topic==="light"){
+        $('#lig').html(values);
+      }
+      else if(topic==="led"){
+        $('#led').html(values);
+      }
+      else if(topic==="DHT"){
+        $('#dht').html(values);
+      }
+    });
+
+    /* create a client that will subscribe to topics
+    var sensor = mqtt.connect("wss://photoresistance:pr@m23.cloudmqtt.com:37980");
+    var topic = "sensor";
+    var values = [];
+
+    // subscribe to some topic
+    sensor.subscribe(topic);
+    //console.log(sensor.subscribe(topic));
+
+    // this will be called when a message is received
+    sensor.on("message", function (topic, payload) {
+      var message = new TextDecoder("utf-8").decode(payload);
+      console.log("message received by sensor: " , topic , message);
+      values = values + [topic+" : "+message+"\n"];
+      $('#lig').html(values);
+    });*/
+
+  } );
+
+  </script>
+
+  <h1 class="text-center">Internet of things</h1>
+    </br>
+    <div>
+      <p> Here you can switch the light ON/OFF, use the Philips Hue and read data from the sensors.</br></br>
+      </p>
+    </div>
+
+  <h3>Switch light ON/OFF</h3>
+  <div>
+    Switch led on:
+    <input type="button" id="publish" value="Switch" />
+  </div> 
+
+  </br>
+
+  <h3>Philips Hue</h3>
+
+  <form>
+     Select a Philips Hue to manage :<br>
+     <br>
+     <div>
+       <input id="choice" type="text">
+     </div>
+     <br>
+     <div>
+       <input id="on" type="button" value="Turn the Light On">
+       <input id="off" type="button" value="Turn the Light Off">
+    </div>
+  </form>
+
+  </br>
+
+  <h3>Sensors</h3>
+  <div class="form-group">
+    <textarea class="form-control" id="lig"></textarea>
+    <textarea class="form-control" id="dht"></textarea>
+    <textarea class="form-control" id="led"></textarea>
+  </div>
+  
+
+  <div class="navbar navbar-fixed-bottom">
+    <span class="text-muted">Designed and built by Marchoux Mathilde, Pouzet Valentin and Florian Tambon</span>
+  </div>
+
+
+<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
+        integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
+        crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.3/umd/popper.min.js"
+        integrity="sha384-vFJXuSJphROIrBnz7yo7oB41mKfc8JzQZiCq4NCceLEaO4IHwicKwpJf9c9IpFgh"
+        crossorigin="anonymous"></script>
+<script src="https://unpkg.com/vue"></script>
+
+</body>
+</html>
