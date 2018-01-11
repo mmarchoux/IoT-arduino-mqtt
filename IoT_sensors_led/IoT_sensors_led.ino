@@ -17,7 +17,7 @@ int PRPIN = A0;
 
 //// ACTUATORS
 // led
-int LEDPIN = 8;
+int LEDPIN = 7;
 int state = 0;
 
 
@@ -32,7 +32,7 @@ const char* mqttPassword = "CqSslASh3VrS";
 byte mac[] = {
   0xDE, 0xAD, 0xBE, 0xEF, 0xFE, 0xED
 };
-IPAddress ip(192, 168, 1, 4);       // IP address of the arduino
+//IPAddress ip(192, 168, 220, 24);       // IP address of the arduino
 IPAddress server (34, 249, 42, 33); // IP address of the mqtt server
 
 
@@ -64,7 +64,7 @@ void setup() {
 
   //initialize MQTTserver
   Serial.println("Setting up server");
-  Ethernet.begin(mac, ip);
+  Ethernet.begin(mac);
   delay(2000);
 
   Serial.println("Setting up server");
@@ -119,24 +119,19 @@ void loop() {
   String jsonPayloadLED = "state of the light : ";
     jsonPayloadLED += state;
 
+  if(!client.connected()){
+    Serial.println("Not Connected");
+  }
   
   const char *payloadLig = jsonPayloadLig.c_str(); // convert string to const char*
   Serial.println(jsonPayloadLig);
-  if(!client.connected()){
-    Serial.println("Not Connected");
-  }
 
   const char *payloadDHT = jsonPayloadDHT.c_str(); // convert string to const char*
   Serial.println(jsonPayloadDHT);
-  if(!client.connected()){
-    Serial.println("Not Connected");
-  }
-
+  
   const char *payloadLED = jsonPayloadLED.c_str(); // convert string to const char*
   Serial.println(jsonPayloadLED);
-  if(!client.connected()){
-    Serial.println("Not Connected");
-  }
+  
 
   String jsonPayloadValL = " ";
     jsonPayloadValL += lig;
@@ -162,11 +157,12 @@ void loop() {
 // Function to connect and reconnect as necessary to the MQTT server.
 // Should be called in the loop function and it will take care if connecting.
 void MQTT_connect() {
-     Serial.println("Not connected");
+     Serial.println("Not connected1");
      boolean connectionResult = client.connect("pjd-mqtt",mqttUser,mqttPassword,MQTT_TOPIC,1,0,"Test Connection");
      Serial.println(connectionResult);
-     Serial.println("MQTT Connected! ");      if(!client.connected()){
-
+     Serial.println("MQTT Connected! ");      
+     if(!client.connected()){
+      client.connect("pjd-mqtt",mqttUser,mqttPassword,MQTT_TOPIC,1,0,"Test Connection");
   }
   
 }
